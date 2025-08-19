@@ -1,0 +1,3 @@
+# For upload_files.ipynb
+requests
+google-cloud-storage

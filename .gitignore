@@ -29,7 +29,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
+venv-nb/
 # PyInstaller
 *.manifest
 *.spec
