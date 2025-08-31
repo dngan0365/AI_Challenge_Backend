@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Frame Index Tracker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input, button {
+      margin: 5px 0;
+      padding: 8px;
+      font-size: 16px;
+    }
+    #output {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h2>Video Frame Index Tracker</h2>
+
+  <label for="videoUrl">Enter Video URL:</label><br>
+  <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4" size="50">
+  <button id="loadVideoBtn">Load Video</button>
+
+  <div>
+    <video id="myVideo" width="640" height="360" controls style="margin-top: 10px;">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <button id="stopBtn" style="margin-top: 10px;">Stop & Get Frame Index</button>
+
+  <div id="output"></div>
+
+  <script>
+    const video = document.getElementById("myVideo");
+    const stopBtn = document.getElementById("stopBtn");
+    const loadVideoBtn = document.getElementById("loadVideoBtn");
+    const videoUrlInput = document.getElementById("videoUrl");
+    const output = document.getElementById("output");
+
+    // Load video from input URL
+    loadVideoBtn.addEventListener("click", () => {
+      const url = videoUrlInput.value.trim();
+      if (!url) {
+        alert("Please enter a video URL");
+        return;
+      }
+      video.src = url;
+      video.load();
+      output.innerHTML = "";
+    });
+
+    stopBtn.addEventListener("click", () => {
+      if (!video.src) {
+        alert("Please load a video first!");
+        return;
+      }
+
+      // Pause the video
+      video.pause();
+
+      // Get current time in seconds
+      const currentTime = video.currentTime;
+
+      // Get frame index
+      const fps = 30; // adjust if you know actual fps of video
+      const frameIndex = Math.floor(currentTime * fps);
+
+      output.innerHTML = `
+        Current Time: ${currentTime.toFixed(3)} seconds <br>
+        Frame Index: ${frameIndex}
+      `;
+    });
+  </script>
+</body>
+</html>
