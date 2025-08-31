@@ -1,18 +1,21 @@
-# Use lightweight Python image
 FROM python:3.11-slim
 
-# Set working directory
 WORKDIR /app
 
-# Install dependencies
+# Install unzip for Python (not strictly needed, but safe)
+RUN apt-get update && apt-get install -y unzip && rm -rf /var/lib/apt/lists/*
+
+# Copy requirements and install
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy app
-COPY . .
+# Copy Python script
+COPY main.py .
 
-# Expose port
-ENV PORT=8080
+# Set environment variables (can override with Cloud Run job)
+ENV BUCKET=test-video-retrieval
+ENV OUT_PREFIX=dataset/unzips
+ENV RAW_ZIPS=dataset/raw_zips
 
-# Run FastAPI app with uvicorn
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Run the job
+CMD ["python", "main.py"]

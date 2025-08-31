@@ -1,4 +1,1 @@
-fastapi
-uvicorn[standard]
 google-cloud-storage
-google-auth
