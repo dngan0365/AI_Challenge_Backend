@@ -7,6 +7,7 @@ dotenv.load_dotenv()
 GEMMA_MODEL_NAME = "google/embeddinggemma-300m"
 CACHE_DIR = os.getenv("CACHE_DIR", "")  # 🔹 Windows cache folder
 device = torch.device("cpu")
+HF_TOKEN = os.getenv("HF_TOKEN", "")
 
 _gemma_model_cache = None
 _gemma_tokenizer_cache = None
