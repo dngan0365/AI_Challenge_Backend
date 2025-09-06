@@ -5,9 +5,6 @@ from uuid import UUID
 class QueryRequest(BaseModel):
     text_query: Optional[str] = None
     image_query: Optional[str] = None
-    od_json: Optional[str] = None   # or Dict[str, Any] if it's JSON
-    ocr_text: Optional[str] = None
-    asr_text: Optional[str] = None
 
 class QueryResult(BaseModel):
     keyframe_id: UUID

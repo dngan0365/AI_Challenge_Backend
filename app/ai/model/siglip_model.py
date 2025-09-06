@@ -1,10 +1,13 @@
 import torch
 from transformers import AutoProcessor, AutoModel, AutoTokenizer
 from PIL import Image
+from dotenv import load_dotenv
+import os
+load_dotenv()
 
 SIGLIP_MODEL_ID = "google/siglip-base-patch16-224"
-CACHE_DIR = r"C:\Users\mt200\.cache\huggingface\hub"  # 🔹 Windows cache folder
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+CACHE_DIR = os.getenv("CACHE_DIR", "")  # 🔹 Windows cache folder
+device = torch.device("cpu")
 
 _siglip_model_cache = None
 _siglip_tokenizer_cache = None
