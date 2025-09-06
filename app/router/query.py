@@ -59,7 +59,7 @@ async def create_query(
                 "asr": query_data.asr_text
             }
             user_prompt = {k: v for k, v in user_prompt.items() if v}
-
+    
             agent_response = await agent.run(
                 ChatMessage(role="user", content="Find keyframes about cats")
             )
