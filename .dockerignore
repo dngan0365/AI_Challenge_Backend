@@ -1,0 +1,49 @@
+# Python cache / compiled
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.pdb
+
+# Virtual environments
+venv/
+.env/
+.venv/
+
+# Environment variables
+*.env
+
+# Logs
+*.log
+logs/
+*.out
+*.err
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Jupyter / notebooks
+*.ipynb
+.ipynb_checkpoints/
+
+# Tests & coverage
+.coverage
+htmlcov/
+pytest_cache/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# IDE / editor settings
+.vscode/
+.idea/
+*.swp
+
+
+# Data (tùy chọn)
+data/
+datasets/

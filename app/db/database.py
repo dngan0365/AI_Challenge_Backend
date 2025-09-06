@@ -15,7 +15,7 @@ load_dotenv()
 # Environment variables
 # -------------------------
 DB_HOST = os.getenv("DB_HOST", "0.0.0.0")
-DB_PORT = int(os.getenv("DB_PORT", 5432))
+DB_PORT = os.getenv("DB_PORT", 5432)
 DB_USER = os.getenv("DB_USER", "your_user")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "your_password")
 DB_NAME = os.getenv("DB_NAME", "your_db")
@@ -58,6 +58,7 @@ async def init_async_pool():
             min_size=1,
             max_size=10
         )
+        print("Connecting with:", DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, DB_NAME)
         logger.info("Asyncpg pool created successfully")
     return _async_pool
 

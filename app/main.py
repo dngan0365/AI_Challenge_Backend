@@ -8,7 +8,7 @@ from app.router import health, history, query, session
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="Video Query API", version="1.0.0")
+app = FastAPI(title="Video Query API", swagger_ui_parameters={"syntaxHighlight": False}, version="1.0.0")
 
 # CORS middleware
 app.add_middleware(
