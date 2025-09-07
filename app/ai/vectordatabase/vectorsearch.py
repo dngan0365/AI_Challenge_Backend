@@ -1,68 +1,84 @@
 from llama_index.core import VectorStoreIndex
 from dotenv import load_dotenv
+
 import os
 import weaviate
+import logging
 from llama_index.core import StorageContext
 from llama_index.vector_stores.weaviate import WeaviateVectorStore
 from weaviate.classes.query import MetadataQuery
 load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 # credentials = service_account.Credentials.from_service_account_file(CREDENTIALS_PATH)
 
 def _get_client(type_retrieval) -> weaviate.WeaviateClient:
     """Helper to create a WeaviateVectorStore from index and endpoint names."""
     if type_retrieval == "image":
+        logger.info("Connecting to Weaviate image vector DB")
         client = weaviate.connect_to_weaviate_cloud(
-            cluster_url=os.getenv("WEAVIATE_IMG_URL"),
-            auth_credentials=weaviate.auth.AuthApiKey(os.getenv("WEAVIATE_IMG_API_KEY")),
+            cluster_url=os.getenv("WEAVIATE_CLIP_IMG_URL"),
+            auth_credentials=weaviate.auth.AuthApiKey(os.getenv("WEAVIATE_CLIP_IMG_API_KEY")),
             skip_init_checks=True
         )
-    if type_retrieval == "text":
+    elif type_retrieval == "text":
+        logger.info("Connecting to Weaviate text vector DB")
         client = weaviate.connect_to_weaviate_cloud(
             cluster_url=os.getenv("WEAVIATE_TEXT_URL"),
             auth_credentials=weaviate.auth.AuthApiKey(os.getenv("WEAVIATE_TEXT_API_KEY")),
             skip_init_checks=True
         )
-    
+    else:
+        logger.warning(f"Unknown type_retrieval: {type_retrieval}")
+        client = None
     return client
 
 
-def run_vector_search_img(client, text_query, query_embedding, collection, top_k=50):
+def run_vector_search_img(client, text_query, query_embedding, collection, top_k=100):
     """Generic vector search function."""
-    response = collection.query.hybrid(
-    query=text_query,
-    vector=query_embedding,
-    alpha=0.3,
-    limit=top_k,
-    return_metadata=MetadataQuery(distance=True)
-)
+    logger.info(f"Running image vector search: text_query='{text_query}', top_k={top_k}")
+    response = collection.query.near_vector(
+        near_vector=query_embedding,
+        limit=top_k,
+        return_metadata=MetadataQuery(distance=True)
+    )
+    logger.info(f"Image vector search response: {response}")
     client.close()
     return response
 
-def run_vector_search_text(client, text_query, query_embedding, collection, top_k=50):
+def run_vector_search_text(client, text_query, query_embedding, collection, top_k=100):
     """Generic vector search function."""
+    logger.info(f"Running text vector search: text_query='{text_query}', top_k={top_k}")
     response = collection.query.hybrid(
-    query=text_query,
-    query_properties=["text", "title"],
-    vector=query_embedding,
-    alpha=0.3,
-    limit=top_k,
-    return_metadata=MetadataQuery(distance=True)
-)
+        query=text_query,
+        query_properties=["text"],
+        vector=query_embedding,
+        alpha=0.3,
+        limit=top_k,
+        return_metadata=MetadataQuery(distance=True)
+    )
+    logger.info(f"Text vector search response: {response}")
     client.close()
     return response
 
-def text_vectorsearch(query_text, query_embedding, top_k=50):
+def text_vectorsearch(query_text, query_embedding, top_k=100):
     """Search text vector DB using Qwen embeddings."""
     type_retrieval = "text"
+    logger.info(f"text_vectorsearch called with query_text='{query_text}', top_k={top_k}")
     client = _get_client(type_retrieval)
-    text_collection = client.collections.use(os.getenv("TEXT_COLLECTION", "TextRetrieval"))
+    text_collection_name = os.getenv("TEXT_COLLECTION", "TextRetrieval")
+    logger.info(f"Using text collection: {text_collection_name}")
+    text_collection = client.collections.use(text_collection_name)
     return run_vector_search_text(client, query_text, query_embedding, text_collection, top_k)
 
 
-def image_vectorsearch(text_query, query_embedding, top_k=50):
-    """Search image vector DB using SigLIP embeddings."""
+def image_vectorsearch(text_query, query_embedding, top_k=100):
+    """Search image vector DB using CLIP embeddings."""
     type_retrieval = "image"
+    logger.info(f"image_vectorsearch called with text_query='{text_query}', top_k={top_k}")
     client = _get_client(type_retrieval)
-    image_collection = client.collections.use(os.getenv("IMG_COLLECTION", "ImageRetrieval"))
+    image_collection_name = os.getenv("CLIP_IMG_COLLECTION", "ImageRetrieval")
+    logger.info(f"Using image collection: {image_collection_name}")
+    image_collection = client.collections.use(image_collection_name)
     return run_vector_search_img(client, text_query, query_embedding, image_collection, top_k)
