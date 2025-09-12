@@ -5,41 +5,23 @@ $outFolder = "dataset/unzips_b2"
 
 # Danh sách file cần tải về: "Tên file" = "URL"
 $files = @{
-    "Videos_K02.zip" = "https://aic-data.ledo.io.vn/Videos_K02.zip"
-    "Videos_K04.zip" = "https://aic-data.ledo.io.vn/Videos_K04.zip"
-    "Videos_K05.zip" = "https://aic-data.ledo.io.vn/Videos_K05.zip"
-    "Videos_K06.zip" = "https://aic-data.ledo.io.vn/Videos_K06.zip"
-    "Videos_K07.zip" = "https://aic-data.ledo.io.vn/Videos_K07.zip"
-    "Videos_K09.zip" = "https://aic-data.ledo.io.vn/Videos_K09.zip"
-    "Videos_K10.zip" = "https://aic-data.ledo.io.vn/Videos_K10.zip"
-    "Videos_K11.zip" = "https://aic-data.ledo.io.vn/Videos_K11.zip"
-    "Videos_K12.zip" = "https://aic-data.ledo.io.vn/Videos_K12.zip"
-    "Videos_K13.zip" = "https://aic-data.ledo.io.vn/Videos_K13.zip"
-    "Videos_K14.zip" = "https://aic-data.ledo.io.vn/Videos_K14.zip"
-    "Videos_K16.zip" = "https://aic-data.ledo.io.vn/Videos_K16.zip"
-    "Videos_K17.zip" = "https://aic-data.ledo.io.vn/Videos_K17.zip"
-    "Videos_K18.zip" = "https://aic-data.ledo.io.vn/Videos_K18.zip"
-    "Videos_K19.zip" = "https://aic-data.ledo.io.vn/Videos_K19.zip"
-    "Videos_K20.zip" = "https://aic-data.ledo.io.vn/Videos_K20.zip"
-    "Keyframes_K01.zip" = "https://aic-data.ledo.io.vn/Keyframes_K01.zip"
-    "Keyframes_K02.zip" = "https://aic-data.ledo.io.vn/Keyframes_K02.zip"
-    "Keyframes_K03.zip" = "https://aic-data.ledo.io.vn/Keyframes_K03.zip"
-    "Keyframes_K04.zip" = "https://aic-data.ledo.io.vn/Keyframes_K04.zip"
-    "Keyframes_K05.zip" = "https://aic-data.ledo.io.vn/Keyframes_K05.zip"
-    "Keyframes_K06.zip" = "https://aic-data.ledo.io.vn/Keyframes_K06.zip"
-    "Keyframes_K07.zip" = "https://aic-data.ledo.io.vn/Keyframes_K07.zip"
-    "Keyframes_K08.zip" = "https://aic-data.ledo.io.vn/Keyframes_K08.zip"
-    "Keyframes_K10.zip" = "https://aic-data.ledo.io.vn/Keyframes_K10.zip"
-    "Keyframes_K11.zip" = "https://aic-data.ledo.io.vn/Keyframes_K11.zip"
+    # "Videos_K02.zip" = "https://aic-data.ledo.io.vn/Videos_K02.zip"
+    # "Videos_K04.zip" = "https://aic-data.ledo.io.vn/Videos_K04.zip"
+    # "Videos_K06.zip" = "https://aic-data.ledo.io.vn/Videos_K06.zip"
+    # "Videos_K07.zip" = "https://aic-data.ledo.io.vn/Videos_K07.zip"
+    # "Videos_K09.zip" = "https://aic-data.ledo.io.vn/Videos_K09.zip"
+    # "Videos_K11.zip" = "https://aic-data.ledo.io.vn/Videos_K11.zip"
+    # "Videos_K13.zip" = "https://aic-data.ledo.io.vn/Videos_K13.zip"
+    # "Videos_K19.zip" = "https://aic-data.ledo.io.vn/Videos_K19.zip"
+    # "Videos_K20.zip" = "https://aic-data.ledo.io.vn/Videos_K20.zip"
+    # "Keyframes_K02.zip" = "https://aic-data.ledo.io.vn/Keyframes_K02.zip"
+    # "Keyframes_K08.zip" = "https://aic-data.ledo.io.vn/Keyframes_K08.zip"
+    # "Keyframes_K10.zip" = "https://aic-data.ledo.io.vn/Keyframes_K10.zip"
+    # "Keyframes_K11.zip" = "https://aic-data.ledo.io.vn/Keyframes_K11.zip"
     "Keyframes_K12.zip" = "https://aic-data.ledo.io.vn/Keyframes_K12.zip"
-    "Keyframes_K14.zip" = "https://aic-data.ledo.io.vn/Keyframes_K14.zip"
-    "Keyframes_K15.zip" = "https://aic-data.ledo.io.vn/Keyframes_K15.zip"
-    "Keyframes_K16.zip" = "https://aic-data.ledo.io.vn/Keyframes_K16.zip"
-    "Keyframes_K17.zip" = "https://aic-data.ledo.io.vn/Keyframes_K17.zip"
-    "Keyframes_K19.zip" = "https://aic-data.ledo.io.vn/Keyframes_K19.zip"
-    "Keyframes_K20.zip" = "https://aic-data.ledo.io.vn/Keyframes_K20.zip"
-    "media-info-aic25-b2.zip" = "https://aic-data.ledo.io.vn/media-info-aic25-b2.zip"
-    "map-keyframes-b2.zip" = "https://aic-data.ledo.io.vn/map-keyframes-b2.zip"
+    # "Keyframes_K14.zip" = "https://aic-data.ledo.io.vn/Keyframes_K14.zip"
+    # "Keyframes_K15.zip" = "https://aic-data.ledo.io.vn/Keyframes_K15.zip"
+    # "Keyframes_K17.zip" = "https://aic-data.ledo.io.vn/Keyframes_K17.zip"
 }
 
 # Thư mục tạm để xử lý
@@ -52,7 +34,7 @@ function Download-FileWithRetry {
     param (
         [string]$url,
         [string]$outputPath,
-        [int]$maxRetries = 3
+        [int]$maxRetries = 5
     )
     $attempt = 0
     while ($attempt -lt $maxRetries) {
