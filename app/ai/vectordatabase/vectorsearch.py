@@ -1,5 +1,6 @@
 from llama_index.core import VectorStoreIndex
 from dotenv import load_dotenv
+from weaviate.classes.query import HybridFusion
 
 import os
 import weaviate
@@ -38,10 +39,14 @@ def _get_client(type_retrieval) -> weaviate.WeaviateClient:
 def run_vector_search_img(client, text_query, query_embedding, collection, top_k=100):
     """Generic vector search function."""
     logger.info(f"Running image vector search: text_query='{text_query}', top_k={top_k}")
-    response = collection.query.near_vector(
-        near_vector=query_embedding,
+    response = collection.query.hybrid(
+        query=text_query,
+        query_properties=["text"],
+        vector=query_embedding,
+        alpha=0.8,  # weight for vector similarity
         limit=top_k,
-        return_metadata=MetadataQuery(distance=True)
+        fusion_type=HybridFusion.RELATIVE_SCORE,
+        return_metadata=MetadataQuery(score=True, explain_score=True),
     )
     logger.info(f"Image vector search response: {response}")
     client.close()
@@ -54,9 +59,10 @@ def run_vector_search_text(client, text_query, query_embedding, collection, top_
         query=text_query,
         query_properties=["text"],
         vector=query_embedding,
-        alpha=0.3,
+        alpha=0.2,  # weight for vector similarity
         limit=top_k,
-        return_metadata=MetadataQuery(distance=True)
+        fusion_type=HybridFusion.RELATIVE_SCORE,
+        return_metadata=MetadataQuery(score=True, explain_score=True),
     )
     logger.info(f"Text vector search response: {response}")
     client.close()
