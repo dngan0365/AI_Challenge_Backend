@@ -6,8 +6,8 @@ import torch
 from llama_index.core.tools import FunctionTool
 import numpy as np
 # --- your embedding + vector search imports ---
-from app.ai.model.qwen_model import get_qwen_model_cached, embed_qwen
-from app.ai.model.siglip_model import get_siglip_model_cached, embed_siglip
+from app.ai.model.gemma_model import get_gemma_model_cached, embed_gemma
+from app.ai.model.clip_model import get_clip_model_cached, embed_clip
 from app.ai.vectordatabase.vectorsearch import text_vectorsearch, image_vectorsearch
 
 def _pack_results(results) -> Dict[Any, Any]:
@@ -36,25 +36,22 @@ def _pack_results(results) -> Dict[Any, Any]:
 # --- 2. Hàm tạo embedding từ text ---
 def embed_text(text: str) -> np.ndarray:
     """
-    Tạo embedding vector cho một câu text sử dụng SigLIP
+    Tạo embedding vector cho một câu text sử dụng CLIP
     """
-    tokenizer, processor, model = get_siglip_model_cached()
-    # device = "cuda" if torch.cuda.is_available() else "cpu"
-    # model.to("cpu")
-    # model.eval()
+    processor, model = get_clip_model_cached()  # ✅ Only two values
+
     inputs = processor(text=[text], return_tensors="pt", padding=True)
     inputs = {k: v.to("cpu") for k, v in inputs.items()}
-    
+
     with torch.no_grad():
         outputs = model.get_text_features(**inputs)
-    
+
     vector = outputs.cpu().numpy()
     vector = vector / np.linalg.norm(vector, axis=-1, keepdims=True)  # normalize
     return vector[0]
 
 
 def image_retrieval(
-    text_query: Optional[str] = None,
     image_query: Optional[str] = None,
     top_k: int = 100
 ) -> Dict[str, Any]:
@@ -76,12 +73,12 @@ def image_retrieval(
     #     img = Image.open(io.BytesIO(resp.content)).convert("RGB")
     #     emb = embed_siglip(img, mode="image", model_tuple=(tokenizer, processor, model))
 
-    results = image_vectorsearch(text_query, query_embedding, top_k=top_k)
+    results = image_vectorsearch(image_query, query_embedding, top_k=top_k)
     return _pack_results(results)
 
 
 IMAGE_RETRIEVAL_TOOL = FunctionTool.from_defaults(
     fn=image_retrieval,
     name="image_retrieval",
-    description="IMAGE search on the image vector DB (SigLIP). Input: text or image_url (exactly one), top_k."
+    description="IMAGE search on the image vector DB (CLIP). Input: text or image_url (exactly one), top_k."
 )

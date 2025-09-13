@@ -6,7 +6,7 @@ import torch
 from llama_index.core.tools import FunctionTool
 
 # --- your embedding + vector search imports ---
-from app.ai.model.qwen_model import get_qwen_model_cached, embed_qwen
+from app.ai.model.gemma_model import get_gemma_model_cached, embed_gemma
 from app.ai.model.siglip_model import get_siglip_model_cached, embed_siglip
 from app.ai.vectordatabase.vectorsearch import text_vectorsearch, image_vectorsearch
 
@@ -32,7 +32,7 @@ def _pack_results(results) -> Dict[Any, Any]:
 
 
 def get_text_embedding(text: str):
-    tokenizer, model = get_qwen_model_cached()
+    tokenizer, model = get_gemma_model_cached()
     inputs = tokenizer(text, return_tensors="pt", truncation=True, padding=True)
     with torch.no_grad():
         outputs = model(**inputs)
@@ -51,7 +51,11 @@ def get_text_embedding(text: str):
     return emb
 
 
+<<<<<<< HEAD
 # ---------- TEXT RETRIEVAL (Qwen) ----------
+=======
+# ---------- TEXT RETRIEVAL (Gemma) ----------
+>>>>>>> 626b0db1ed60ddfa1d7c58569fdc2bedf8212879
 def text_retrieval(query_text: str, top_k: int = 100) -> Dict[str, Any]:
     """
     Tool: text_retrieval
@@ -69,5 +73,5 @@ def text_retrieval(query_text: str, top_k: int = 100) -> Dict[str, Any]:
 TEXT_RETRIEVAL_TOOL = FunctionTool.from_defaults(
     fn=text_retrieval,
     name="text_retrieval",
-    description="TEXT-ONLY search on the text vector DB (Qwen embeddings). Input: query, top_k."
+    description="TEXT-ONLY search on the text vector DB (Gemma embeddings). Input: query, top_k."
 )

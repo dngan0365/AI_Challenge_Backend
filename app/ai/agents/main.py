@@ -14,7 +14,7 @@ Use tool IMAGE_RETRIEVAL_TOOL to search on the image based on text.
 Do NOT include extra commentary outside JSON.
 """
 
-llm = LlamaOpenAI(model="gpt-4o-mini", temperature=0)  # hoặc model bạn muốn
+llm = LlamaOpenAI(model="gpt-4o-mini", temperature=0.1)  # hoặc model bạn muốn
 
 query_engine_tools = [IMAGE_RETRIEVAL_TOOL]
 

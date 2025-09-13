@@ -36,4 +36,4 @@ async def shutdown_event():
 app.include_router(session.router, prefix="/api", tags=["Sessions"])
 app.include_router(query.router, prefix="/api", tags=["Queries"])
 app.include_router(history.router, prefix="/api", tags=["History"])
-app.include_router(health.router, tags=["Health"])
+app.include_router(health.router, prefix="/api", tags=["Health"])

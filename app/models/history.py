@@ -6,11 +6,11 @@ from datetime import datetime
 
 class HistoryResult(BaseModel):
     keyframe_id: UUID
-    video_id: UUID
+    video_id: str          # đổi từ UUID sang str
     frame_number: int
     timestamp_ms: int
     image_url: str
-    metadata: Dict[str, Any]   # safer than `dict`
+    metadata: Dict[str, Any]
     rank: int
     score: float
 
