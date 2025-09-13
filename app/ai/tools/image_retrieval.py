@@ -16,7 +16,7 @@ def _pack_results(results) -> Dict[Any, Any]:
     object_metadata: List[Any] = []
     for r in results.objects:
         object_property.append(r.properties)
-        object_metadata.append(r.metadata.distance)
+        object_metadata.append(r.metadata.score)
         # node = getattr(r, "node", None)
         # meta = getattr(node, "metadata", {}) if node else {}
         # kid = (
@@ -28,7 +28,7 @@ def _pack_results(results) -> Dict[Any, Any]:
         #     keyframe_ids.append(kid)
         # matches.append({"id": kid, "score": score, "metadata": meta})
 
-    return {"property": object_property, "distance": object_metadata}
+    return {"property": object_property, "score": object_metadata}
 
 
 # ---------- IMAGE RETRIEVAL (SigLIP) ----------
@@ -53,7 +53,7 @@ def embed_text(text: str) -> np.ndarray:
 
 def image_retrieval(
     image_query: Optional[str] = None,
-    top_k: int = 100
+    top_k: int = 300
 ) -> Dict[str, Any]:
     """
     Tool: image_retrieval

@@ -11,35 +11,37 @@ from app.ai.tools.text_retrieval import text_retrieval
 router = APIRouter()
 logger = logging.getLogger(__name__)
 
+def safe_get_list(d, key):
+    v = d.get(key, [])
+    return v if isinstance(v, list) else []
+
+def safe_get_score_list(d):
+    """Extract scores from retrieval results (already packed by _pack_results)."""
+    scores = d.get("score", [])
+    props = d.get("property", [])
+
+    # đảm bảo scores là list
+    if not isinstance(scores, list):
+        scores = [scores]
+
+    # pad nếu thiếu
+    while len(scores) < len(props):
+        scores.append(None)
+
+    return scores
 
 def get_search_results(query_data: QueryRequest, query_type="both"):
-    """Run image/text retrieval and return combined results."""
     text_query = query_data.text_query
     image_query = query_data.image_query
 
-    logger.info(
-        f"get_search_results called with text_query='{text_query}', "
-        f"image_query='{image_query}', query_type='{query_type}'"
-    )
+    result_1 = image_retrieval(image_query=image_query) if query_type in ["image", "both"] and image_query else {"property": [], "score": []}
+    result_2 = text_retrieval(query_text=text_query) if query_type in ["text", "both"] and text_query else {"property": [], "score": []}
 
-    def safe_get_list(d, key):
-        v = d.get(key, [])
-        return v if isinstance(v, list) else []
+    prop1 = result_1.get("property", [])
+    dist1 = safe_get_score_list(result_1)
 
-    # Run retrievals
-    result_1 = image_retrieval(image_query=image_query) if query_type in ["image", "both"] and image_query else {"property": [], "distance": []}
-    result_2 = text_retrieval(query_text=text_query) if query_type in ["text", "both"] and text_query else {"property": [], "distance": []}
-
-    prop1 = safe_get_list(result_1, "property")
-    dist1 = safe_get_list(result_1, "distance")
-    prop2 = safe_get_list(result_2, "property")
-    dist2 = safe_get_list(result_2, "distance")
-
-    # Pad distances if needed
-    if len(dist1) < len(prop1):
-        dist1 += [None] * (len(prop1) - len(dist1))
-    if len(dist2) < len(prop2):
-        dist2 += [None] * (len(prop2) - len(dist2))
+    prop2 = result_2.get("property", [])
+    dist2 = safe_get_score_list(result_2)
 
     results = []
 
@@ -52,21 +54,41 @@ def get_search_results(query_data: QueryRequest, query_type="both"):
             return prop[0]
         return None
 
+    # gom image
     for prop, dist in zip(prop1, dist1):
         frame_id = extract_frame_id(prop)
-        results.append({"frame_id": frame_id, "property": prop, "distance": dist, "source": "image"})
+        results.append({"frame_id": frame_id, "property": prop, "score": dist, "source": "image"})
+
+    # gom text
     for prop, dist in zip(prop2, dist2):
         frame_id = extract_frame_id(prop)
-        results.append({"frame_id": frame_id, "property": prop, "distance": dist, "source": "text"})
+        results.append({"frame_id": frame_id, "property": prop, "score": dist, "source": "text"})
 
-    # Deduplicate
+    # merge
     unique_results = {}
     for r in results:
-        if r["frame_id"] not in unique_results:
-            unique_results[r["frame_id"]] = r
+        fid = r["frame_id"]
+        if fid not in unique_results:
+            unique_results[fid] = {
+                "frame_id": fid,
+                "property": r["property"],
+                "image_score": 0.0,
+                "text_score": 0.0,
+                "total_score": 0.0
+            }
+        if r["source"] == "image":
+            unique_results[fid]["image_score"] = r["score"] or 0.0
+        elif r["source"] == "text":
+            unique_results[fid]["text_score"] = r["score"] or 0.0
 
-    return list(unique_results.values())
+        if not unique_results[fid]["property"]:
+            unique_results[fid]["property"] = r["property"]
 
+    # compute + sort
+    for r in unique_results.values():
+        r["total_score"] = (r["image_score"] or 0.0) + (r["text_score"] or 0.0)
+
+    return sorted(unique_results.values(), key=lambda x: x["total_score"], reverse=True)
 
 async def insert_query_and_log(db, session: UUID, query_data: QueryRequest):
     """Insert query and log user messages safely, return query_id."""

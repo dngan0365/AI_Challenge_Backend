@@ -36,7 +36,7 @@ def _get_client(type_retrieval) -> weaviate.WeaviateClient:
     return client
 
 
-def run_vector_search_img(client, text_query, query_embedding, collection, top_k=100):
+def run_vector_search_img(client, text_query, query_embedding, collection, top_k=300):
     """Generic vector search function."""
     logger.info(f"Running image vector search: text_query='{text_query}', top_k={top_k}")
     response = collection.query.hybrid(
@@ -48,11 +48,11 @@ def run_vector_search_img(client, text_query, query_embedding, collection, top_k
         fusion_type=HybridFusion.RELATIVE_SCORE,
         return_metadata=MetadataQuery(score=True, explain_score=True),
     )
-    logger.info(f"Image vector search response: {response}")
+    # logger.info(f"Image vector search response: {response}")
     client.close()
     return response
 
-def run_vector_search_text(client, text_query, query_embedding, collection, top_k=100):
+def run_vector_search_text(client, text_query, query_embedding, collection, top_k=300):
     """Generic vector search function."""
     logger.info(f"Running text vector search: text_query='{text_query}', top_k={top_k}")
     response = collection.query.hybrid(
@@ -64,11 +64,11 @@ def run_vector_search_text(client, text_query, query_embedding, collection, top_
         fusion_type=HybridFusion.RELATIVE_SCORE,
         return_metadata=MetadataQuery(score=True, explain_score=True),
     )
-    logger.info(f"Text vector search response: {response}")
+    # logger.info(f"Text vector search response: {response}")
     client.close()
     return response
 
-def text_vectorsearch(query_text, query_embedding, top_k=100):
+def text_vectorsearch(query_text, query_embedding, top_k=300):
     """Search text vector DB using Qwen embeddings."""
     type_retrieval = "text"
     logger.info(f"text_vectorsearch called with query_text='{query_text}', top_k={top_k}")
@@ -79,7 +79,7 @@ def text_vectorsearch(query_text, query_embedding, top_k=100):
     return run_vector_search_text(client, query_text, query_embedding, text_collection, top_k)
 
 
-def image_vectorsearch(text_query, query_embedding, top_k=100):
+def image_vectorsearch(text_query, query_embedding, top_k=300):
     """Search image vector DB using CLIP embeddings."""
     type_retrieval = "image"
     logger.info(f"image_vectorsearch called with text_query='{text_query}', top_k={top_k}")
