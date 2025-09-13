@@ -80,11 +80,8 @@ def text_vectorsearch(query_text, query_embedding, top_k=100):
 
 
 def image_vectorsearch(text_query, query_embedding, top_k=100):
-<<<<<<< HEAD
-    """Search image vector DB using SigLIP embeddings."""
-=======
+
     """Search image vector DB using CLIP embeddings."""
->>>>>>> 626b0db1ed60ddfa1d7c58569fdc2bedf8212879
     type_retrieval = "image"
     logger.info(f"image_vectorsearch called with text_query='{text_query}', top_k={top_k}")
     client = _get_client(type_retrieval)

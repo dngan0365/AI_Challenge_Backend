@@ -51,11 +51,8 @@ def get_text_embedding(text: str):
     return emb
 
 
-<<<<<<< HEAD
-# ---------- TEXT RETRIEVAL (Qwen) ----------
-=======
+
 # ---------- TEXT RETRIEVAL (Gemma) ----------
->>>>>>> 626b0db1ed60ddfa1d7c58569fdc2bedf8212879
 def text_retrieval(query_text: str, top_k: int = 100) -> Dict[str, Any]:
     """
     Tool: text_retrieval
