@@ -52,7 +52,7 @@ def get_text_embedding(text: str):
 
 
 # ---------- TEXT RETRIEVAL (Qwen) ----------
-def text_retrieval(query_text: str, top_k: int = 20) -> Dict[str, Any]:
+def text_retrieval(query_text: str, top_k: int = 100) -> Dict[str, Any]:
     """
     Tool: text_retrieval
     Use when the user asks to search **text-only** content.

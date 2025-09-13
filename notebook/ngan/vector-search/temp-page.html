@@ -26,6 +26,10 @@
   <label for="videoUrl">Enter Video URL:</label><br>
   <input type="text" id="videoUrl" placeholder="https://example.com/video.mp4" size="50">
   <button id="loadVideoBtn">Load Video</button>
+  <br>
+
+  <label for="fpsInput">Enter FPS (required):</label><br>
+  <input type="number" id="fpsInput" placeholder="Enter FPS" min="1" required>
 
   <div>
     <video id="myVideo" width="640" height="360" controls style="margin-top: 10px;">
@@ -42,6 +46,7 @@
     const stopBtn = document.getElementById("stopBtn");
     const loadVideoBtn = document.getElementById("loadVideoBtn");
     const videoUrlInput = document.getElementById("videoUrl");
+    const fpsInput = document.getElementById("fpsInput");
     const output = document.getElementById("output");
 
     // Load video from input URL
@@ -62,18 +67,25 @@
         return;
       }
 
+      const fps = parseFloat(fpsInput.value);
+
+      if (!fps || fps <= 0) {
+        alert("Please enter a valid FPS value!");
+        return;
+      }
+
       // Pause the video
       video.pause();
 
       // Get current time in seconds
       const currentTime = video.currentTime;
 
-      // Get frame index
-      const fps = 30; // adjust if you know actual fps of video
+      // Calculate frame index
       const frameIndex = Math.floor(currentTime * fps);
 
       output.innerHTML = `
         Current Time: ${currentTime.toFixed(3)} seconds <br>
+        FPS: ${fps} <br>
         Frame Index: ${frameIndex}
       `;
     });

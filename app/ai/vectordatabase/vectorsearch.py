@@ -27,7 +27,7 @@ def _get_client(type_retrieval) -> weaviate.WeaviateClient:
     return client
 
 
-def run_vector_search_img(client, text_query, query_embedding, collection, top_k=50):
+def run_vector_search_img(client, text_query, query_embedding, collection, top_k=100):
     """Generic vector search function."""
     response = collection.query.hybrid(
     query=text_query,
@@ -39,7 +39,7 @@ def run_vector_search_img(client, text_query, query_embedding, collection, top_k
     client.close()
     return response
 
-def run_vector_search_text(client, text_query, query_embedding, collection, top_k=50):
+def run_vector_search_text(client, text_query, query_embedding, collection, top_k=100):
     """Generic vector search function."""
     response = collection.query.hybrid(
     query=text_query,
@@ -52,7 +52,7 @@ def run_vector_search_text(client, text_query, query_embedding, collection, top_
     client.close()
     return response
 
-def text_vectorsearch(query_text, query_embedding, top_k=50):
+def text_vectorsearch(query_text, query_embedding, top_k=100):
     """Search text vector DB using Qwen embeddings."""
     type_retrieval = "text"
     client = _get_client(type_retrieval)
@@ -60,7 +60,7 @@ def text_vectorsearch(query_text, query_embedding, top_k=50):
     return run_vector_search_text(client, query_text, query_embedding, text_collection, top_k)
 
 
-def image_vectorsearch(text_query, query_embedding, top_k=50):
+def image_vectorsearch(text_query, query_embedding, top_k=100):
     """Search image vector DB using SigLIP embeddings."""
     type_retrieval = "image"
     client = _get_client(type_retrieval)

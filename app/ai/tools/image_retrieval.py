@@ -56,7 +56,7 @@ def embed_text(text: str) -> np.ndarray:
 def image_retrieval(
     text_query: Optional[str] = None,
     image_query: Optional[str] = None,
-    top_k: int = 20
+    top_k: int = 100
 ) -> Dict[str, Any]:
     """
     Tool: image_retrieval
