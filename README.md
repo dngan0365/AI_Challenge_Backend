@@ -47,67 +47,42 @@ The system integrates state-of-the-art AI models for captioning, object detectio
 The system is composed of two major components:
 
 ### **🔹 Backend (FastAPI)**
-
 The backend orchestrates data ingestion, offline indexing, query processing, and retrieval. It leverages the following AI models and technologies:
 
 * **Video Processing**
-
   * *Keyframe Extraction* – splits videos into representative frames.
-
   * *Scene Captioning* – [Vintern-1B-v3.5](https://huggingface.co/5CD-AI/Vintern-1B-v3_5) generates natural language descriptions of keyframes.
-
   * *Object Detection* – detects and labels objects within frames for metadata filtering.
-
   * *Image Embedding* – [CLIP](https://openai.com/research/clip) and [SigLIP](https://huggingface.co) encode frames into dense vectors.
-
+    
 * **Audio Processing**
-
   * *Segmentation* – WebRTC VAD detects speech segments in audio tracks.
-
   * *ASR* – linhtq/viet-asr transcribes Vietnamese speech.
-
   * *Transcript Post-processing* – Gemini refines transcripts (punctuation, normalization).
-
   * *Text Embedding* – [Gemma-300m](https://huggingface.co/google/embeddinggemma-300m) encodes transcripts into embeddings.
 
 * **Vector Search**
-
   * Weaviate maintains two collections:
-
     * **Image Vector DB** – stores frame embeddings (CLIP/SigLIP).
-
     * **Text Vector DB** – stores caption and transcript embeddings (Gemma).
-
   * Supports **hybrid retrieval** (text \+ image).
-
   * Metadata filtering and score fusion improve result ranking.
 
 * **Storage**
-
   * Google Cloud Storage (GCS) stores raw videos, extracted audio, and keyframes.
-
   * Relational database logs sessions, queries, and retrieval results.
-
 ---
 
 ### **🔹 Frontend (React)**
-
 The frontend provides an interactive interface for users to:
-
 * Submit queries in **text, speech, or image** form.
-
 * Browse results via a **Result Panel** showing thumbnails, captions, transcripts, and timestamps.
-
 * Navigate results **temporally** (by video timeline) and **contextually** (neighboring frames/segments).
-
 * Manage query sessions and view search history.
 
 The interface is built with:
-
 * **React \+ Vite** – fast modern web framework.
-
 * **TailwindCSS \+ shadcn/ui** – clean, responsive UI components.
-
 * **REST API integration** with FastAPI backend.
 
 ---
@@ -120,31 +95,22 @@ The interface is built with:
 Batch processing to build the vector indices.
 
 - **Video Registration & Metadata:** Register `video_id` and URI; persist raw media in **Google Cloud Storage (GCS)**.
-
 - **Keyframe Extraction:** Sample representative frames from each video.  
   **Output:** list of keyframes with timestamps.
-
 - **Audio Extraction:** Extract the audio track from the video.  
   **Output:** raw audio file.
-
 - **Scene Captioning (Vintern-1B-v3.5):** Generate semantic captions for each keyframe.  
   *Optional:* embed captions with **Gemma-300m** and index in the Text DB.
-
 - **Object Detection (BTC model):** Detect and label objects in keyframes for downstream filtering.  
   **Output:** object labels stored in the Metadata DB.
-
 - **Image Embeddings (CLIP / SigLIP):** Encode each keyframe into a visual embedding.  
   **Output:** vectors written to **Weaviate — Image Vector DB**.
-
 - **Segmentation (WebRTC VAD):** Split audio into speech-active segments.  
   **Output:** speech segments.
-
 - **ASR (linhtq/viet-asr):** Transcribe each speech segment into Vietnamese text.  
   **Output:** raw transcripts.
-
 - **Transcript Refinement (Gemini):** Normalize punctuation, remove fillers, and tidy grammar without changing meaning.  
   **Output:** cleaned transcripts.
-
 - **Text Embeddings (embedding-gemma-300m):** Encode cleaned transcripts (and optional captions) into text embeddings.  
   **Output:** vectors written to **Weaviate — Text Vector DB**.
 ---
@@ -160,45 +126,29 @@ Batch processing to build the vector indices.
 - **Frontend (React)**  
   Submit queries in **text / image / speech** via REST API; display **Top-N** results (thumbnail, caption/transcript snippet, timestamp, score).  
   Supports temporal (timeline) and contextual (neighbor frames) navigation.
-
 - **Backend (FastAPI)**  
   `POST /query-text` (text) • `POST /query-img` (image/hybrid) • `GET /history` (saved results) • `POST /session` (session management)
-
 - **Query Normalization**  
   - Text query → **Gemma-300m** → text vector  
   - Speech query → **ASR → Gemini → Gemma-300m** → text vector  
   - Image query → **CLIP/SigLIP** → image vector
-
 - **Hybrid Vector Search:** Search Text Vector DB and Image Vector DB in parallel; merge candidate sets (union or intersection).
-
 - **Metadata Filters:** Filter by `video_id`, time range, and object labels.
-
 - **Score Fusion & Reranking:** Combine cross-modal scores and rerank to produce the final list.
-
 - **Top-N Results:** Return frame, timestamp, preview, caption/transcript snippet, and score; log session/query/results to the Metadata DB.
-
 ---
 
 ## **🛠 Technologies**
 
 * **Backend**: FastAPI, Weaviate, PostgreSQL, GCS
-
 * **Frontend**: React, Vite, TailwindCSS, shadcn/ui
-
 * **AI Models**:
-
   * Vintern-1B-v3.5 (captioning)
-
   * CLIP & SigLIP (image embeddings)
-
   * Object Detection (custom/BTC model)
-
   * Viet-ASR (speech recognition)
-
   * Gemini (LLM transcript refinement)
-
   * Gemma-300m (text embeddings)
-
 ---
 
 ## 🤖 AI Models & Techniques
