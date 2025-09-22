@@ -25,7 +25,7 @@ The system integrates state-of-the-art AI models for captioning, object detectio
 ## ✨ Demo
 
 - 🔗 **Live Demo**: [ai-challenge-frontend.vercel.app](https://ai-challenge-frontend.vercel.app/)  
-- 🎬 *(GIFs, screenshots, or Colab notebooks can be added here for quick demonstration)*  
+- 🎬 **Frontend Repository**: [AI_Challenge_Frontend](https://github.com/dngan0365/AI_Challenge_Frontend)  
 
 ---
 
