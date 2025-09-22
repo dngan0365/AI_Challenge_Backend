@@ -156,7 +156,7 @@ Batch processing to build the vector indices.
 | Component              | Model / Tool         | Role                                |
 |------------------------|----------------------|-------------------------------------|
 | **Captioning**         | Vintern-1B-v3.5      | Generate keyframe captions           |
-| **Object Detection**   | BTC model            | Detect objects for metadata filter   |
+| **Object Detection**   | Faster R-CNN         | Detect objects for metadata filter   |
 | **Image Embeddings**   | CLIP / SigLIP        | Encode keyframes into vectors        |
 | **Segmentation**       | WebRTC VAD           | Detect voice activity in audio       |
 | **ASR**                | linhtq/viet-asr      | Transcribe Vietnamese speech         |
